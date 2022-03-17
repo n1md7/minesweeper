@@ -1,10 +1,11 @@
 {
-  "name": "mine-sweeper",
+  "name": "minesweeper",
   "version": "0.0.1",
   "description": "",
   "keywords": [
     "minesweeper"
   ],
+  "homepage": "https://n1md7.github.io/minesweeper/",
   "license": "",
   "author": "",
   "scripts": {
@@ -12,7 +13,9 @@
     "dev": "parcel index.html --open",
     "start": "npm run build && npm run dev",
     "prepare": "husky install",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "husky": "^7.0.4",
@@ -25,6 +28,7 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
+    "gh-pages": "^3.2.3",
     "lodash": "^4.17.21",
     "ms": "^2.1.2",
     "pixi.js": "^6.2.2"
