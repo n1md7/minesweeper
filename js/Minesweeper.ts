@@ -97,6 +97,7 @@ export default class Minesweeper {
       amount,
       blocks,
     };
+    this.header.updateBombCounter(amount - this.flagged.size);
   }
 
   private generateMap(): void {
@@ -212,7 +213,7 @@ export default class Minesweeper {
         cell.flagged
           ? this.flagged.add(cell.key)
           : this.flagged.delete(cell.key);
-        this.header.updateBombCounter(this.flagged.size);
+        this.header.updateBombCounter(this.bomb.amount - this.flagged.size);
         this.updateActivityStamp();
       });
     });
