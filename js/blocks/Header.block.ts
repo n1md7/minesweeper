@@ -25,7 +25,7 @@ export default class HeaderBlock extends PIXI.Container {
   }
 
   public updateTimer(time: number) {
-    this.timerBlock.setText(time.toString()).adjustText();
+    this.timerBlock.setText(time).adjustText();
   }
 
   public updateStatus(status: GameState) {
@@ -33,6 +33,6 @@ export default class HeaderBlock extends PIXI.Container {
   }
 
   public updateBombCounter(bomb: number) {
-    this.bombBlock.setText(bomb.toString()).adjustText();
+    this.bombBlock.setText(bomb).adjustText();
   }
 }
