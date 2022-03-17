@@ -1,10 +1,11 @@
 import * as PIXI from "pixi.js";
-import { HEADER_HEIGHT } from "../main.constants";
+import { CONTAINER_MARGIN, HEADER_HEIGHT } from "../main.constants";
 
 export default class BodyBlock extends PIXI.Container {
   public constructor() {
     super();
-    this.x = 0;
-    this.y = HEADER_HEIGHT;
+    this.x = CONTAINER_MARGIN;
+    this.y = HEADER_HEIGHT + CONTAINER_MARGIN;
+    this.interactive = true;
   }
 }

@@ -2,11 +2,13 @@ export const ROWS = 9;
 export const COLS = 9;
 export const CELL_SIZE = 32;
 export const CELL_PADDING = 1;
+export const CONTAINER_MARGIN = 14;
 export const CELL_BORDER_RADIUS = 0;
 export const HEADER_HEIGHT = CELL_SIZE * 2;
 export const TEXT_PADDING = 4;
-export const APP_WIDTH = CELL_SIZE * COLS;
-export const APP_HEIGHT = ROWS * CELL_SIZE + HEADER_HEIGHT;
+export const APP_WIDTH = CELL_SIZE * COLS + CONTAINER_MARGIN * 2;
+export const APP_HEIGHT =
+  ROWS * CELL_SIZE + HEADER_HEIGHT + CONTAINER_MARGIN * 2;
 
 export enum CellType {
   Bomb = "💣",

@@ -15,8 +15,8 @@ export default class Cell extends PIXI.Container {
   public mined = false;
   public opened = false;
   public flagged = false;
-  public value = 0;
   private detonated = false;
+  public value = 0;
 
   constructor(x: number, y: number) {
     super();

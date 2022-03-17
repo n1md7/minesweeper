@@ -49,7 +49,7 @@ export default class Minesweeper {
     this.attachBody();
     this.generateBombs();
     this.generateMap();
-    this.attachEventsToMapCells();
+    this.subscribeEvents();
     this.registerTicker();
     this.render();
   }
@@ -58,7 +58,7 @@ export default class Minesweeper {
     this.app = new PIXI.Application({
       width: APP_WIDTH,
       height: APP_HEIGHT,
-      backgroundColor: 0x000000,
+      backgroundColor: 0xeeeeee,
       resolution: window.devicePixelRatio || 1,
     });
   }
@@ -169,15 +169,15 @@ export default class Minesweeper {
     this.lastActivityAt = Date.now();
     this.revealed.clear();
     this.flagged.clear();
-    this.unsubscribeToMapCells();
+    this.unsubscribeEvents();
     this.generateBombs();
     this.generateMap();
-    this.attachEventsToMapCells();
+    this.subscribeEvents();
     this.header.status.setPlaying();
     this.finished = false;
   }
 
-  private attachEventsToMapCells(): void {
+  private subscribeEvents(): void {
     this.map.forEach((cell) => {
       cell.on("mousedown", ({ target: cell }) => {
         if (this.finished) return;
@@ -206,7 +206,7 @@ export default class Minesweeper {
     this.body.addChild(...this.map.values());
   }
 
-  private unsubscribeToMapCells(): void {
+  private unsubscribeEvents(): void {
     this.map.forEach((cell) => {
       cell.off("mousedown");
       cell.off("mouseup");

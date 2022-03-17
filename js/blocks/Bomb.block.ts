@@ -1,4 +1,9 @@
-import { APP_WIDTH, HEADER_HEIGHT, TEXT_PADDING } from "../main.constants";
+import {
+  APP_WIDTH,
+  CONTAINER_MARGIN,
+  HEADER_HEIGHT,
+  TEXT_PADDING,
+} from "../main.constants";
 import TextBlock from "./Text.block";
 
 export default class BombBlock extends TextBlock {
@@ -8,7 +13,7 @@ export default class BombBlock extends TextBlock {
   }
 
   public adjustText() {
-    this.x = APP_WIDTH - this.width - TEXT_PADDING;
+    this.x = APP_WIDTH - this.width - TEXT_PADDING - CONTAINER_MARGIN * 2;
     this.y = (HEADER_HEIGHT - this.height) / 2;
 
     return this;

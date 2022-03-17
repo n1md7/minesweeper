@@ -1,4 +1,8 @@
-import { HEADER_HEIGHT, TEXT_PADDING } from "../main.constants";
+import {
+  CONTAINER_MARGIN,
+  HEADER_HEIGHT,
+  TEXT_PADDING,
+} from "../main.constants";
 import TextBlock from "./Text.block";
 
 export default class TimerBlock extends TextBlock {

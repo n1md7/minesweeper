@@ -1,4 +1,9 @@
-import { APP_WIDTH, GameState, HEADER_HEIGHT } from "../main.constants";
+import {
+  APP_WIDTH,
+  CONTAINER_MARGIN,
+  GameState,
+  HEADER_HEIGHT,
+} from "../main.constants";
 import TextBlock from "./Text.block";
 import Utils from "../Utils";
 
@@ -6,11 +11,12 @@ export default class StatusBlock extends TextBlock {
   public constructor(text = GameState.Playing) {
     super(text);
     this.adjustText();
+    this.buttonMode = true;
   }
 
   public adjustText() {
     this.y = (HEADER_HEIGHT - this.height) / 2;
-    this.x = (APP_WIDTH - this.width) / 2;
+    this.x = (APP_WIDTH - this.width) / 2 - CONTAINER_MARGIN;
 
     return this;
   }

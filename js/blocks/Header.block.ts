@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import BombBlock from "./Bomb.block";
 import TimerBlock from "./Timer.block";
 import StatusBlock from "./Status.block";
-import { GameState } from "../main.constants";
+import { CONTAINER_MARGIN, GameState, HEADER_HEIGHT } from "../main.constants";
 
 export default class HeaderBlock extends PIXI.Container {
   public constructor(
@@ -11,6 +11,8 @@ export default class HeaderBlock extends PIXI.Container {
     private readonly bombBlock: BombBlock
   ) {
     super();
+    this.x = CONTAINER_MARGIN;
+    this.y = CONTAINER_MARGIN;
     this.appendChildren();
   }
 
