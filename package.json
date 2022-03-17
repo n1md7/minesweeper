@@ -9,7 +9,7 @@
   "license": "",
   "author": "",
   "scripts": {
-    "build": "parcel build index.html",
+    "build": "rimraf dist && parcel build index.html --public-url ./",
     "dev": "parcel index.html --open",
     "start": "npm run build && npm run dev",
     "prepare": "husky install",
@@ -31,6 +31,7 @@
     "gh-pages": "^3.2.3",
     "lodash": "^4.17.21",
     "ms": "^2.1.2",
-    "pixi.js": "^6.2.2"
+    "pixi.js": "^6.2.2",
+    "rimraf": "^2.7.1"
   }
 }
