@@ -1,8 +1,8 @@
 import Utils from "./Utils";
 
 export const [ROWS, COLS] = Utils.gameMode();
-export const CELL_SIZE = 24;
-export const CELL_PADDING = 1;
+export const CELL_SIZE = 48;
+export const CELL_PADDING = 0;
 export const CONTAINER_MARGIN = 14;
 export const CELL_BORDER_RADIUS = 0;
 export const HEADER_HEIGHT = CELL_SIZE * 2;

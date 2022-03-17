@@ -7,7 +7,7 @@ export default abstract class TextBlock extends PIXI.Text {
 
     this.style = new PIXI.TextStyle({
       fontFamily: "monospace",
-      fontSize: 24,
+      fontSize: 64,
       fill: "red",
       fontWeight: "bold",
     });

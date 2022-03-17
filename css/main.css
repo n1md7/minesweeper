@@ -291,7 +291,7 @@ body .container {
   top: 4px;
   left: 0;
   right: 0;
-  max-width: 640px;
+  max-width: 64vw;
   max-height: 90vh;
   height: auto;
   margin: auto;
@@ -300,10 +300,13 @@ body .container {
 }
 
 body .container canvas {
-  width: 60%;
   left: 0;
   right: 0;
   margin: auto;
+  max-width: 64vw;
+  max-height: 64vh;
+  height: auto;
+  width: auto;
 }
 
 body .container .footer > div {
