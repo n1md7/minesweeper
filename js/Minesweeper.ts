@@ -124,20 +124,6 @@ export default class Minesweeper {
     }
   }
 
-  private openCell(cell: Cell) {
-    if (this.finished) return;
-
-    if (cell.opened) return;
-    if (cell.flagged) return;
-    if (cell.mined) return this.gameOver(cell);
-
-    this.updateActivityStamp();
-    this.header.status.setPlaying();
-
-    this.propagateOpen(cell, new Set());
-    return this.assertWin();
-  }
-
   private propagateOpen(cell: Cell, visited: Set<BlockKey>) {
     cell.open();
     this.revealed.add(cell.key);
@@ -197,42 +183,80 @@ export default class Minesweeper {
 
   private subscribeEvents(): void {
     this.map.forEach((cell) => {
-      cell.on("mousedown", ({ target: cell }) => {
-        if (this.finished) return;
-        if (cell.isDisabled) return;
-        this.header.status.setWorried();
-      });
-      cell.on("mouseup", ({ target: cell }) => {
-        this.openCell(cell);
-      });
-      cell.on("rightclick", ({ target: cell }) => {
-        if (this.finished) return;
-        if (cell.opened) return;
-        cell.flagged = !cell.flagged;
-        cell.updateVisual();
-        cell.flagged
-          ? this.flagged.add(cell.key)
-          : this.flagged.delete(cell.key);
-        this.header.updateBombCounter(this.bomb.amount - this.flagged.size);
-        this.updateActivityStamp();
-      });
+      cell.on("mousedown", this.cellPress.bind(this));
+      cell.on("mouseup", this.cellRelease.bind(this));
+      cell.on("pointertap", this.cellRelease.bind(this));
+      cell.on("rightclick", this.cellContextMenuPress.bind(this));
     });
     this.header.status.interactive = true;
-    this.header.status.on("click", () => {
-      this.restartGame();
-    });
+    this.header.status.on("click", this.statusPress.bind(this));
     this.body.addChild(...this.map.values());
   }
 
   private unsubscribeEvents(): void {
     this.map.forEach((cell) => {
-      cell.off("mousedown");
-      cell.off("mouseup");
-      cell.off("rightclick");
+      cell.off("mousedown", this.cellPress);
+      cell.off("mouseup", this.cellRelease);
+      cell.off("pointertap", this.cellRelease);
+      cell.off("rightclick", this.cellContextMenuPress);
     });
     this.header.status.interactive = false;
-    this.header.status.off("click");
+    this.header.status.off("click", this.statusPress);
     this.body.removeChildren();
+  }
+
+  private statusPress() {
+    this.restartGame();
+  }
+
+  private cellPress({ target: cell }) {
+    if (this.finished) return;
+    if (cell.isDisabled) return;
+    this.header.status.setWorried();
+  }
+
+  private cellRelease({ target: cell }) {
+    if (this.finished) return;
+
+    if (cell.flagged) return;
+    if (cell.opened) {
+      if (cell.value) {
+        const dangerousNeighbors = new Set();
+        const flaggedNeighbors = new Set();
+        for (const neighbor of Utils.cellNeighbors(cell.key)) {
+          const neighborCell = this.map.get(neighbor);
+          if (!neighborCell.opened && !neighborCell.flagged) {
+            dangerousNeighbors.add(neighborCell);
+          }
+          if (neighborCell.flagged) {
+            flaggedNeighbors.add(neighborCell);
+          }
+        }
+        if (flaggedNeighbors.size === cell.value) {
+          for (const neighbor of dangerousNeighbors) {
+            this.cellRelease({ target: neighbor });
+          }
+        }
+      }
+      return;
+    }
+    if (cell.mined) return this.gameOver(cell);
+
+    this.updateActivityStamp();
+    this.header.status.setPlaying();
+
+    this.propagateOpen(cell, new Set());
+    return this.assertWin();
+  }
+
+  private cellContextMenuPress({ target: cell }) {
+    if (this.finished) return;
+    if (cell.opened) return;
+    cell.flagged = !cell.flagged;
+    cell.updateVisual();
+    cell.flagged ? this.flagged.add(cell.key) : this.flagged.delete(cell.key);
+    this.header.updateBombCounter(this.bomb.amount - this.flagged.size);
+    this.updateActivityStamp();
   }
 
   private registerTicker(): void {

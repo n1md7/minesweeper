@@ -63,6 +63,7 @@ export default class Cell extends PIXI.Container {
     cellText.style = new PIXI.TextStyle({
       fontFamily: "monospace",
       fontWeight: "bold",
+      fontSize: 64,
     });
     cellText.x = (CELL_SIZE * 0.25) / 2;
     cellText.y = (CELL_SIZE * 0.25) / 2;
