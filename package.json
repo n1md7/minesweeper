@@ -28,10 +28,13 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
+    "@n1md7/indexeddb-promise": "^6.1.1",
     "gh-pages": "^3.2.3",
     "lodash": "^4.17.21",
     "ms": "^2.1.2",
     "pixi.js": "^6.2.2",
-    "rimraf": "^2.7.1"
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^2.7.1",
+    "rxjs": "^7.5.5"
   }
 }

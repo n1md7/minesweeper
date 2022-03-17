@@ -261,11 +261,64 @@ textarea {
   }
 }
 
-body canvas {
-  position: absolute;
-  top: 0;
+body {
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #fff;
+}
+
+body p.modes {
+  text-align: center;
+}
+
+body p.modes a {
+  font-family: monospace;
+  text-decoration: none;
+}
+
+body p.modes a:after {
+  content: " | ";
+}
+
+body p.modes a:last-child:after {
+  content: "";
+}
+
+body .container {
+  position: relative;
+  top: 4px;
   left: 0;
-  bottom: 0;
+  right: 0;
+  max-width: 640px;
+  max-height: 90vh;
+  height: auto;
+  margin: auto;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+body .container canvas {
+  width: 60%;
+  left: 0;
   right: 0;
   margin: auto;
+}
+
+body .container .footer > div {
+  display: flex;
+  justify-content: center;
+  align-items: normal;
+}
+
+body .container .footer > div > div {
+  border: solid 1px #ddd;
+  width: 100%;
+  font-family: monospace;
+  font-size: 1.2em;
+}
+
+body .container .footer > div > div > strong {
+  font-size: 1.2em;
 }

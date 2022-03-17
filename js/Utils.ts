@@ -1,5 +1,5 @@
 import * as Lo from "lodash";
-import { BlockKey } from "./main.types";
+import { BlockKey, NumberFormat } from "./main.types";
 import { COLS, ROWS } from "./main.constants";
 
 export default class Utils {
@@ -42,5 +42,22 @@ export default class Utils {
     ];
 
     return neighborBlocks.filter(Utils.inBoundCells).map(Utils.toAxB);
+  }
+
+  static gameMode() {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode") || "9x9";
+    const [ROWS, COLS] = mode.split("x", 2);
+    const rows = parseInt(ROWS) || 6;
+    const cols = parseInt(COLS) || 6;
+
+    return [
+      rows >= 6 && rows <= 24 ? rows : 9,
+      cols >= 6 && cols <= 32 ? cols : 9,
+    ];
+  }
+
+  static scoreFormat(score: number): NumberFormat {
+    return score.toString().padStart(3, "0") as NumberFormat;
   }
 }

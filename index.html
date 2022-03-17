@@ -28,7 +28,25 @@
   </head>
 
   <body>
-    <!-- Add your site or application content here -->
+    <p class="modes">
+      <a href="?mode=9x9" data-mode="beginner">Beginner 9x9</a>
+      <a href="?mode=16x16" data-mode="intermediate">Intermediate 16x16</a>
+      <a href="?mode=24x24" data-mode="expert">Expert 24x24</a>
+    </p>
+    <div class="container">
+      <div class="header">
+        <h1>Minesweeper</h1>
+      </div>
+      <div class="body"></div>
+      <div class="footer">
+        <h3>Your best results</h3>
+        <div>
+          <div id="beginner">Beginner: <strong>000</strong></div>
+          <div id="intermediate">Intermediate: <strong>000</strong></div>
+          <div id="expert">Expert: <strong>000</strong></div>
+        </div>
+      </div>
+    </div>
     <script src="js/vendor/modernizr-3.11.2.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/main.ts"></script>

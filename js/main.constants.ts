@@ -1,6 +1,7 @@
-export const ROWS = 9;
-export const COLS = 9;
-export const CELL_SIZE = 32;
+import Utils from "./Utils";
+
+export const [ROWS, COLS] = Utils.gameMode();
+export const CELL_SIZE = 24;
 export const CELL_PADDING = 1;
 export const CONTAINER_MARGIN = 14;
 export const CELL_BORDER_RADIUS = 0;
@@ -51,3 +52,9 @@ export const ColorsList = [
   Colors.Seven,
   Colors.Eight,
 ];
+
+export enum GameMode {
+  beginner = "9x9",
+  intermediate = "16x16",
+  expert = "24x24",
+}

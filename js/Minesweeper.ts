@@ -1,18 +1,21 @@
-import { APP_HEIGHT, APP_WIDTH, COLS, ROWS } from "./main.constants";
+import { APP_HEIGHT, APP_WIDTH, COLS, GameMode, ROWS } from "./main.constants";
 import HeaderBlock from "./blocks/Header.block";
 import BodyBlock from "./blocks/Body.block";
 import StatusBlock from "./blocks/Status.block";
 import BombBlock from "./blocks/Bomb.block";
 import TimerBlock from "./blocks/Timer.block";
 import Generate from "./Generate";
-import { BlockKey } from "./main.types";
+import { BlockKey, GameChannelDto } from "./main.types";
 import Cell from "./blocks/Cell.block";
 import Utils from "./Utils";
 import * as PIXI from "pixi.js";
 import ms from "ms";
+import { Observable, ReplaySubject } from "rxjs";
 
 export default class Minesweeper {
   private static instance: Minesweeper;
+  private subject: ReplaySubject<GameChannelDto>;
+  private observer: Observable<GameChannelDto>;
   private app: PIXI.Application;
   private header: HeaderBlock;
   private body: BodyBlock;
@@ -31,6 +34,10 @@ export default class Minesweeper {
     this.init();
   }
 
+  public get broadcast(): Observable<GameChannelDto> {
+    return this.observer;
+  }
+
   public static getInstance(): Minesweeper {
     if (!Minesweeper.instance) {
       Minesweeper.instance = new Minesweeper();
@@ -40,10 +47,15 @@ export default class Minesweeper {
   }
 
   public render(): void {
-    document.body.appendChild(this.app.view);
+    const container = document.querySelector(".container .body");
+    if (container) {
+      container.appendChild(this.app.view);
+    }
   }
 
   private init(): void {
+    this.subject = new ReplaySubject<GameChannelDto>(0, 0);
+    this.observer = this.subject.asObservable();
     this.createPixiApplication();
     this.attachHeader();
     this.attachBody();
@@ -78,7 +90,7 @@ export default class Minesweeper {
   }
 
   private generateBombs(): void {
-    const sqrt = Math.sqrt(ROWS * COLS);
+    const sqrt = ROWS * COLS * 0.113;
     const amount = Math.round(sqrt);
     const blocks = Generate.bombs(amount);
     this.bomb = {
@@ -148,6 +160,11 @@ export default class Minesweeper {
   private gameWin(): void {
     this.finished = true;
     this.header.status.setWon();
+    const [ROWS, COLS] = Utils.gameMode();
+    this.subject.next({
+      mode: `${ROWS}x${COLS}` as GameMode,
+      score: this.calculateTime(),
+    });
   }
 
   private revealRemainingBombs(): void {
