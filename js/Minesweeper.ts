@@ -22,6 +22,7 @@ export default class Minesweeper {
   private gameStartedAt = Date.now();
   private lastActivityAt = Date.now();
   private touchStartedAt = Date.now();
+  private touchSensitivity = 300; // ms
   private map: Map<BlockKey, Cell> = new Map();
   private revealed: Set<BlockKey> = new Set();
   private flagged: Set<BlockKey> = new Set();
@@ -226,14 +227,18 @@ export default class Minesweeper {
     this.restartGame();
   }
 
-  private cellTouchStart() {
+  private cellTouchStart(event) {
     this.touchStartedAt = Date.now();
+    this.cellPress(event);
+    setTimeout(() => {
+      this.header.status.setPlaying();
+    }, this.touchSensitivity);
   }
 
   private cellTouchEnd({ target: cell }) {
     const now = Date.now();
     const delta = now - this.touchStartedAt;
-    if (delta < ms("350ms")) {
+    if (delta < this.touchSensitivity) {
       return this.cellRelease({ target: cell });
     }
     this.cellContextMenuPress({ target: cell });
