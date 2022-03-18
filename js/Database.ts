@@ -40,7 +40,7 @@ export default class Database {
         where: {
           mode,
         },
-        orderByDESC: false,
+        orderByDESC: true,
         sortBy: "mode",
         limit: 1,
       })
