@@ -25,6 +25,7 @@ export default class Minesweeper {
   private revealed: Set<BlockKey> = new Set();
   private flagged: Set<BlockKey> = new Set();
   private finished = false;
+  private started = false;
   private bomb = {
     amount: 0,
     blocks: null,
@@ -146,6 +147,7 @@ export default class Minesweeper {
 
   private gameWin(): void {
     this.finished = true;
+    this.started = false;
     this.header.status.setWon();
     const [ROWS, COLS] = Utils.gameMode();
     this.subject.next({
@@ -164,6 +166,7 @@ export default class Minesweeper {
     cell.detonate();
     this.revealed.add(cell.key);
     this.finished = true;
+    this.started = false;
     this.revealRemainingBombs();
     return this.header.status.setGameOver();
   }
@@ -177,16 +180,18 @@ export default class Minesweeper {
     this.generateBombs();
     this.generateMap();
     this.subscribeEvents();
+    this.header.updateTimer(0);
     this.header.status.setPlaying();
     this.finished = false;
+    this.started = false;
   }
 
   private subscribeEvents(): void {
     this.map.forEach((cell) => {
       cell.on("mousedown", this.cellPress.bind(this));
       cell.on("mouseup", this.cellRelease.bind(this));
-      cell.on("pointertap", this.cellRelease.bind(this));
       cell.on("rightclick", this.cellContextMenuPress.bind(this));
+      Utils.isMobile && cell.on("pointertap", this.cellRelease.bind(this));
     });
     this.header.status.interactive = true;
     this.header.status.on("click", this.statusPress.bind(this));
@@ -217,6 +222,10 @@ export default class Minesweeper {
 
   private cellRelease({ target: cell }) {
     if (this.finished) return;
+    if (!this.started) {
+      this.started = true;
+      this.gameStartedAt = Date.now();
+    }
 
     if (cell.flagged) return;
     if (cell.opened) {
@@ -262,9 +271,10 @@ export default class Minesweeper {
   private registerTicker(): void {
     this.app.ticker.add(() => {
       if (this.finished) return;
-
-      this.assertActivity();
-      this.header.updateTimer(this.calculateTime());
+      if (this.started) {
+        this.assertActivity();
+        this.header.updateTimer(this.calculateTime());
+      }
     });
   }
 }

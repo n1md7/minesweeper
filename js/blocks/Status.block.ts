@@ -58,4 +58,10 @@ export default class StatusBlock extends TextBlock {
 
     return this;
   }
+
+  public setLoading() {
+    this.setText("💬");
+
+    return this;
+  }
 }

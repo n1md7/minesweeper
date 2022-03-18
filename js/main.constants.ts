@@ -33,13 +33,13 @@ export enum Colors {
   Question = 0xffff00,
   Empty = 0xcccccc,
   One = 0x0000ff,
-  Two = 0x00ff00,
-  Three = 0xffff00,
-  Four = 0xff0000,
-  Five = 0x0000ff,
-  Six = 0x00ff00,
-  Seven = 0xffff00,
-  Eight = 0xff0000,
+  Two = 0x72ffa5,
+  Three = 0xff0000,
+  Four = 0xcc00ff,
+  Five = 0xff00cc,
+  Six = 0xcccccc,
+  Seven = 0x000000,
+  Eight = 0x111111,
 }
 
 export const ColorsList = [

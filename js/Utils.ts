@@ -1,8 +1,13 @@
 import * as Lo from "lodash";
 import { BlockKey, NumberFormat } from "./main.types";
 import { COLS, ROWS } from "./main.constants";
+import isMobile from "is-mobile";
 
 export default class Utils {
+  static get isMobile() {
+    return isMobile();
+  }
+
   static random(max: number): number {
     return Lo.random(0, max - 1);
   }
