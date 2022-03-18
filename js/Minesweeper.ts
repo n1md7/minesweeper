@@ -190,32 +190,35 @@ export default class Minesweeper {
   private subscribeEvents(): void {
     this.map.forEach((cell) => {
       if (Utils.isMobile) {
-        cell.on("touchstart", this.cellTouchStart.bind(this));
-        cell.on("touchend", this.cellTouchEnd.bind(this));
+        cell.on("touchstart", this.cellTouchStart, this);
+        cell.on("touchend", this.cellTouchEnd, this);
       } else {
-        cell.on("mousedown", this.cellPress.bind(this));
-        cell.on("mouseup", this.cellRelease.bind(this));
-        cell.on("rightclick", this.cellContextMenuPress.bind(this));
+        cell.on("mousedown", this.cellPress, this);
+        cell.on("mouseup", this.cellRelease, this);
+        cell.on("rightclick", this.cellContextMenuPress, this);
       }
     });
     this.header.status.interactive = true;
-    this.header.status.on("click", this.statusPress.bind(this));
-    this.header.status.on("pointertap", this.statusPress.bind(this));
+    if (Utils.isMobile) {
+      this.header.status.on("pointertap", this.statusPress, this);
+    } else {
+      this.header.status.on("click", this.statusPress, this);
+    }
     this.body.addChild(...this.map.values());
   }
 
   private unsubscribeEvents(): void {
     this.map.forEach((cell) => {
-      cell.off("touchstart", this.cellTouchStart);
-      cell.off("touchend", this.cellTouchEnd);
-      cell.off("mousedown", this.cellPress);
-      cell.off("mouseup", this.cellRelease);
-      cell.off("pointertap", this.cellRelease);
-      cell.off("rightclick", this.cellContextMenuPress);
+      cell.off("touchstart", this.cellTouchStart, this);
+      cell.off("touchend", this.cellTouchEnd, this);
+      cell.off("mousedown", this.cellPress, this);
+      cell.off("mouseup", this.cellRelease, this);
+      cell.off("pointertap", this.cellRelease, this);
+      cell.off("rightclick", this.cellContextMenuPress, this);
     });
     this.header.status.interactive = false;
-    this.header.status.off("click", this.statusPress);
-    this.header.status.off("pointertap", this.statusPress);
+    this.header.status.off("click", this.statusPress, this);
+    this.header.status.off("pointertap", this.statusPress, this);
     this.body.removeChildren();
   }
 
@@ -224,7 +227,6 @@ export default class Minesweeper {
   }
 
   private cellTouchStart() {
-    console.log("touchstart");
     this.touchStartedAt = Date.now();
   }
 
