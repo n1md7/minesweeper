@@ -314,7 +314,8 @@ export default class Minesweeper {
     cell.flagged = !cell.flagged;
     cell.updateVisual();
     cell.flagged ? this.flagged.add(cell.key) : this.flagged.delete(cell.key);
-    this.header.updateBombCounter(this.bomb.amount - this.flagged.size);
+    const bombs = this.bomb.amount - this.flagged.size;
+    this.header.updateBombCounter(bombs >= 0 ? bombs : 0);
     this.updateActivityStamp();
   }
 
