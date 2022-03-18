@@ -32,7 +32,7 @@ minesweeper.broadcast.subscribe((payload) => {
   database
     .addScore(payload)
     .then((result) => {
-      console.info(`New score value added: ${result}`);
+      console.info(`New score value added: ${result.score}`);
     })
     .then(updateHighScores)
     .catch((error) => {

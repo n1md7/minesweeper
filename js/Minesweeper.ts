@@ -245,6 +245,7 @@ export default class Minesweeper {
   }
 
   private cellTouchStart(event) {
+    if (this.finished) return;
     this.touchStartedAt = Date.now();
     this.cellPress(event);
     const scheduledTimer = setTimeout(() => {
@@ -252,15 +253,17 @@ export default class Minesweeper {
     }, this.touchSensitivity);
     this.touchObserver.subscribe(() => {
       clearInterval(scheduledTimer);
+      this.header.status.setPlaying();
     });
   }
 
   private cellTouchEnd({ target: cell }) {
+    if (this.finished) return;
+    this.touchSubject.next("Display playing status");
     if (this.isLongPress) {
       return this.cellContextMenuPress({ target: cell });
     }
     // Just a regular click
-    this.touchSubject.next("Display playing status");
     return this.cellRelease({ target: cell });
   }
 
