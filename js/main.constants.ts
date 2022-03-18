@@ -22,6 +22,7 @@ export enum GameState {
   Playing = "🙂",
   Won = "😎",
   Worried = "😮",
+  Flag = "🚩",
 }
 
 export enum Colors {

@@ -59,8 +59,8 @@ export default class StatusBlock extends TextBlock {
     return this;
   }
 
-  public setLoading() {
-    this.setText("💬");
+  public setFlag() {
+    this.setText(GameState.Flag);
 
     return this;
   }

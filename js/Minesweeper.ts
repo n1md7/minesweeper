@@ -16,6 +16,8 @@ export default class Minesweeper {
   private static instance: Minesweeper;
   private subject: ReplaySubject<GameChannelDto>;
   private observer: Observable<GameChannelDto>;
+  private touchSubject: ReplaySubject<unknown>;
+  private touchObserver: Observable<unknown>;
   private app: PIXI.Application;
   private header: HeaderBlock;
   private body: BodyBlock;
@@ -41,6 +43,13 @@ export default class Minesweeper {
     return this.observer;
   }
 
+  private get isLongPress(): boolean {
+    const now = Date.now();
+    const delta = now - this.touchStartedAt;
+
+    return delta > this.touchSensitivity;
+  }
+
   public static getInstance(): Minesweeper {
     if (!Minesweeper.instance) {
       Minesweeper.instance = new Minesweeper();
@@ -49,7 +58,7 @@ export default class Minesweeper {
     return Minesweeper.instance;
   }
 
-  public render(): void {
+  private render(): void {
     const container = document.querySelector(".container .body");
     if (container) {
       container.appendChild(this.app.view);
@@ -59,6 +68,7 @@ export default class Minesweeper {
   private init(): void {
     this.subject = new ReplaySubject<GameChannelDto>(0, 0);
     this.observer = this.subject.asObservable();
+    this.conditionalInitForMobile();
     this.createPixiApplication();
     this.attachHeader();
     this.attachBody();
@@ -67,6 +77,13 @@ export default class Minesweeper {
     this.subscribeEvents();
     this.registerTicker();
     this.render();
+  }
+
+  private conditionalInitForMobile(): void {
+    if (Utils.isMobile) {
+      this.touchSubject = new ReplaySubject<unknown>(0, 0);
+      this.touchObserver = this.touchSubject.asObservable();
+    }
   }
 
   private createPixiApplication(): void {
@@ -230,20 +247,21 @@ export default class Minesweeper {
   private cellTouchStart(event) {
     this.touchStartedAt = Date.now();
     this.cellPress(event);
-    setTimeout(() => {
-      if (!this.finished) {
-        this.header.status.setPlaying();
-      }
+    const scheduledTimer = setTimeout(() => {
+      this.header.status.setFlag();
     }, this.touchSensitivity);
+    this.touchObserver.subscribe(() => {
+      clearInterval(scheduledTimer);
+    });
   }
 
   private cellTouchEnd({ target: cell }) {
-    const now = Date.now();
-    const delta = now - this.touchStartedAt;
-    if (delta < this.touchSensitivity) {
-      return this.cellRelease({ target: cell });
+    if (this.isLongPress) {
+      return this.cellContextMenuPress({ target: cell });
     }
-    this.cellContextMenuPress({ target: cell });
+    // Just a regular click
+    this.touchSubject.next("Display playing status");
+    return this.cellRelease({ target: cell });
   }
 
   private cellPress({ target: cell }) {
