@@ -184,10 +184,6 @@ textarea {
    Modify as content requires.
    ========================================================================== */
 
-@media only screen and (min-width: 35em) {
-  /* Style adjustments for viewports that meet the condition */
-}
-
 @media print,
   (-webkit-min-device-pixel-ratio: 1.25),
   (min-resolution: 1.25dppx),
@@ -333,4 +329,23 @@ body .container .footer > div > div {
 
 body .container .footer > div > div > strong {
   font-size: 1.2em;
+}
+
+@media only screen and (max-width: 40em) {
+  body .container {
+    max-width: 98vw;
+    max-height: 98vh;
+  }
+
+  body .container canvas {
+    max-width: 98vw;
+  }
+
+  body .container .footer > div {
+    flex-direction: column;
+  }
+
+  body .container .footer > div > div {
+    border: solid 0 #ddd;
+  }
 }
