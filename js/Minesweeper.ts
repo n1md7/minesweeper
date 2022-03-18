@@ -231,7 +231,9 @@ export default class Minesweeper {
     this.touchStartedAt = Date.now();
     this.cellPress(event);
     setTimeout(() => {
-      this.header.status.setPlaying();
+      if (!this.finished) {
+        this.header.status.setPlaying();
+      }
     }, this.touchSensitivity);
   }
 
