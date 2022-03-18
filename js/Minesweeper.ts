@@ -21,6 +21,7 @@ export default class Minesweeper {
   private body: BodyBlock;
   private gameStartedAt = Date.now();
   private lastActivityAt = Date.now();
+  private touchStartedAt = Date.now();
   private map: Map<BlockKey, Cell> = new Map();
   private revealed: Set<BlockKey> = new Set();
   private flagged: Set<BlockKey> = new Set();
@@ -91,8 +92,8 @@ export default class Minesweeper {
   }
 
   private generateBombs(): void {
-    const sqrt = ROWS * COLS * 0.113;
-    const amount = Math.round(sqrt);
+    const coefficient = ROWS * COLS * 0.129;
+    const amount = Math.floor(coefficient);
     const blocks = Generate.bombs(amount);
     this.bomb = {
       amount,
@@ -188,18 +189,25 @@ export default class Minesweeper {
 
   private subscribeEvents(): void {
     this.map.forEach((cell) => {
-      cell.on("mousedown", this.cellPress.bind(this));
-      cell.on("mouseup", this.cellRelease.bind(this));
-      cell.on("rightclick", this.cellContextMenuPress.bind(this));
-      Utils.isMobile && cell.on("pointertap", this.cellRelease.bind(this));
+      if (Utils.isMobile) {
+        cell.on("touchstart", this.cellTouchStart.bind(this));
+        cell.on("touchend", this.cellTouchEnd.bind(this));
+      } else {
+        cell.on("mousedown", this.cellPress.bind(this));
+        cell.on("mouseup", this.cellRelease.bind(this));
+        cell.on("rightclick", this.cellContextMenuPress.bind(this));
+      }
     });
     this.header.status.interactive = true;
     this.header.status.on("click", this.statusPress.bind(this));
+    this.header.status.on("pointertap", this.statusPress.bind(this));
     this.body.addChild(...this.map.values());
   }
 
   private unsubscribeEvents(): void {
     this.map.forEach((cell) => {
+      cell.off("touchstart", this.cellTouchStart);
+      cell.off("touchend", this.cellTouchEnd);
       cell.off("mousedown", this.cellPress);
       cell.off("mouseup", this.cellRelease);
       cell.off("pointertap", this.cellRelease);
@@ -207,11 +215,26 @@ export default class Minesweeper {
     });
     this.header.status.interactive = false;
     this.header.status.off("click", this.statusPress);
+    this.header.status.off("pointertap", this.statusPress);
     this.body.removeChildren();
   }
 
   private statusPress() {
     this.restartGame();
+  }
+
+  private cellTouchStart() {
+    console.log("touchstart");
+    this.touchStartedAt = Date.now();
+  }
+
+  private cellTouchEnd({ target: cell }) {
+    const now = Date.now();
+    const delta = now - this.touchStartedAt;
+    if (delta < ms("350ms")) {
+      return this.cellRelease({ target: cell });
+    }
+    this.cellContextMenuPress({ target: cell });
   }
 
   private cellPress({ target: cell }) {
