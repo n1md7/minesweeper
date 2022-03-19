@@ -42,7 +42,7 @@ export default class Database {
         },
         orderByDESC: false,
         sortBy: "score",
-        limit: 3,
+        limit: 1,
       })
       .then(([maxScoreRecord]) => maxScoreRecord);
   }
