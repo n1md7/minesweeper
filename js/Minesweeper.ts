@@ -24,7 +24,7 @@ export default class Minesweeper {
   private gameStartedAt = Date.now();
   private lastActivityAt = Date.now();
   private touchStartedAt = Date.now();
-  private touchSensitivity = 300; // ms
+  private touchSensitivity = 196; // ms
   private map: Map<BlockKey, Cell> = new Map();
   private revealed: Set<BlockKey> = new Set();
   private flagged: Set<BlockKey> = new Set();
@@ -110,6 +110,8 @@ export default class Minesweeper {
   }
 
   private generateBombs(): void {
+    console.time("Bombs generated in");
+
     const coefficient = ROWS * COLS * 0.129;
     const amount = Math.floor(coefficient);
     const blocks = Generate.bombs(amount);
@@ -118,10 +120,17 @@ export default class Minesweeper {
       blocks,
     };
     this.header.updateBombCounter(amount - this.flagged.size);
+
+    console.timeEnd("Bombs generated in");
   }
 
   private generateMap(): void {
+    console.time("Map generated in");
     this.map = Generate.map(this.bomb.blocks);
+    console.timeEnd("Map generated in");
+    console.time("Map rendered in");
+    this.map.forEach((cell) => cell.canvasRender());
+    console.timeEnd("Map rendered in");
   }
 
   private updateActivityStamp(): void {
@@ -315,7 +324,7 @@ export default class Minesweeper {
     if (this.finished) return;
     if (cell.opened) return;
     cell.flagged = !cell.flagged;
-    cell.updateVisual();
+    cell.rerender();
     cell.flagged ? this.flagged.add(cell.key) : this.flagged.delete(cell.key);
     const bombs = this.bomb.amount - this.flagged.size;
     this.header.updateBombCounter(bombs >= 0 ? bombs : 0);

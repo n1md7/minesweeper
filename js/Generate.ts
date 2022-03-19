@@ -7,6 +7,7 @@ export default class Generate {
   public static bombs(count: number): Set<BlockKey> {
     return (function generate(generated) {
       if (generated.size >= count) return generated;
+
       const x = Utils.random(COLS);
       const y = Utils.random(ROWS);
       const key = Utils.toAxB([x, y]);
@@ -23,13 +24,11 @@ export default class Generate {
     const incrementDanger = (neighborId: BlockKey) => {
       if (!map.has(neighborId)) return map.set(neighborId, 1);
 
-      const neighborCell = map.get(neighborId);
-      if (neighborCell !== CellType.Bomb) {
-        map.set(neighborId, neighborCell + 1);
+      const neighbor = map.get(neighborId);
+      if (neighbor !== CellType.Bomb) {
+        map.set(neighborId, neighbor + 1);
       }
     };
-
-    console.time("Map generated in");
 
     for (const key of bombs) {
       map.set(key, CellType.Bomb);
@@ -48,14 +47,11 @@ export default class Generate {
           } else {
             cell.value = value;
           }
-          cell.updateVisual();
         }
 
         matrix.set(cell.key, cell);
       }
     }
-
-    console.timeEnd("Map generated in");
 
     return matrix;
   }

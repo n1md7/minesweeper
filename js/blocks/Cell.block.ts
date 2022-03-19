@@ -15,8 +15,10 @@ export default class Cell extends PIXI.Container {
   public mined = false;
   public opened = false;
   public flagged = false;
-  private detonated = false;
   public value = 0;
+
+  private detonated = false;
+  private cell: PIXI.Graphics;
 
   constructor(x: number, y: number) {
     super();
@@ -27,7 +29,7 @@ export default class Cell extends PIXI.Container {
       x * CELL_SIZE + CELL_PADDING,
       y * CELL_SIZE + CELL_PADDING
     );
-    this.updateVisual();
+    this.createCell();
   }
 
   public get isDisabled(): boolean {
@@ -42,23 +44,31 @@ export default class Cell extends PIXI.Container {
     return this.value > 0;
   }
 
-  public updateVisual(): void {
-    this.addChild(this.createBlock());
+  public canvasRender(): void {
+    this.addChild(this.cell);
   }
 
   public open(): void {
     this.opened = true;
-    this.updateVisual();
+    this.createCell();
+    this.canvasRender();
   }
 
   public detonate(): void {
     this.opened = true;
     this.detonated = true;
-    this.updateVisual();
+    this.createCell();
+    this.canvasRender();
   }
 
-  private createBlock() {
-    const cellBlock = new PIXI.Graphics();
+  public rerender(): void {
+    this.createCell();
+    this.canvasRender();
+  }
+
+  private createCell() {
+    this.removeChildren();
+    this.cell = new PIXI.Graphics();
     const cellText = new PIXI.Text("");
     cellText.style = new PIXI.TextStyle({
       fontFamily: "monospace",
@@ -69,7 +79,7 @@ export default class Cell extends PIXI.Container {
     cellText.y = (CELL_SIZE * 0.25) / 2;
     cellText.width = (CELL_SIZE - CELL_PADDING) * 0.75;
     cellText.height = (CELL_SIZE - CELL_PADDING) * 0.75;
-    cellBlock.lineStyle(1, Colors.Line);
+    this.cell.lineStyle(1, Colors.Line);
 
     switch (true) {
       case this.opened:
@@ -78,32 +88,30 @@ export default class Cell extends PIXI.Container {
           cellText.text = this.value.toString();
           cellText.style.fill = ColorsList[this.value - 1];
         }
-        cellBlock.beginFill(Colors.Empty);
+        this.cell.beginFill(Colors.Empty);
         if (this.mined) {
           cellText.text = CellType.Bomb;
-          cellBlock.beginFill(this.detonated ? Colors.Bomb : Colors.Default);
+          this.cell.beginFill(this.detonated ? Colors.Bomb : Colors.Default);
         }
         break;
       case this.flagged:
         cellText.text = CellType.Flag;
-        cellBlock.beginFill(Colors.Default);
+        this.cell.beginFill(Colors.Default);
         break;
       default:
         cellText.text = CellType.Empty;
-        cellBlock.beginFill(Colors.Default);
+        this.cell.beginFill(Colors.Default);
         break;
     }
 
-    cellBlock.drawRoundedRect(
+    this.cell.drawRoundedRect(
       0,
       0,
       CELL_SIZE - CELL_PADDING * 2,
       CELL_SIZE - CELL_PADDING * 2,
       CELL_BORDER_RADIUS
     );
-    cellBlock.endFill();
-    cellBlock.addChild(cellText);
-
-    return cellBlock;
+    this.cell.endFill();
+    this.cell.addChild(cellText);
   }
 }

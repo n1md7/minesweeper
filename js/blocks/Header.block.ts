@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import BombBlock from "./Bomb.block";
 import TimerBlock from "./Timer.block";
 import StatusBlock from "./Status.block";
-import { CONTAINER_MARGIN, GameState, HEADER_HEIGHT } from "../main.constants";
+import { CONTAINER_MARGIN, GameState } from "../main.constants";
 
 export default class HeaderBlock extends PIXI.Container {
   public constructor(
@@ -20,12 +20,6 @@ export default class HeaderBlock extends PIXI.Container {
     return this.statusBlock;
   }
 
-  private appendChildren() {
-    this.addChild(this.bombBlock);
-    this.addChild(this.timerBlock);
-    this.addChild(this.statusBlock);
-  }
-
   public updateTimer(time: number) {
     this.timerBlock.setText(time).adjustText();
   }
@@ -36,5 +30,11 @@ export default class HeaderBlock extends PIXI.Container {
 
   public updateBombCounter(bomb: number) {
     this.bombBlock.setText(bomb).adjustText();
+  }
+
+  private appendChildren() {
+    this.addChild(this.bombBlock);
+    this.addChild(this.timerBlock);
+    this.addChild(this.statusBlock);
   }
 }
