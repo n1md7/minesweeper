@@ -40,9 +40,9 @@ export default class Database {
         where: {
           mode,
         },
-        orderByDESC: true,
-        sortBy: "mode",
-        limit: 1,
+        orderByDESC: false,
+        sortBy: "score",
+        limit: 3,
       })
       .then(([maxScoreRecord]) => maxScoreRecord);
   }
