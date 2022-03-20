@@ -11,6 +11,7 @@ import Utils from "./Utils";
 import * as PIXI from "pixi.js";
 import ms from "ms";
 import { Observable, ReplaySubject } from "rxjs";
+import Sound from "./sound/Sound";
 
 export default class Minesweeper {
   private static instance: Minesweeper;
@@ -174,6 +175,7 @@ export default class Minesweeper {
   }
 
   private gameWin(): void {
+    Sound.playWin();
     this.finished = true;
     this.started = false;
     this.header.status.setWon();
@@ -191,6 +193,7 @@ export default class Minesweeper {
   }
 
   private gameOver(cell: Cell) {
+    Sound.playLose();
     cell.detonate();
     this.revealed.add(cell.key);
     this.finished = true;
@@ -282,8 +285,9 @@ export default class Minesweeper {
     this.header.status.setWorried();
   }
 
-  private cellRelease({ target: cell }) {
+  private cellRelease({ target: cell }, recursiveCall = false) {
     if (this.finished) return;
+    if (!recursiveCall) Sound.playClick();
     if (!this.started) {
       this.started = true;
       this.gameStartedAt = Date.now();
@@ -305,7 +309,7 @@ export default class Minesweeper {
         }
         if (flaggedNeighbors.size === cell.value) {
           for (const neighbor of dangerousNeighbors) {
-            this.cellRelease({ target: neighbor });
+            this.cellRelease({ target: neighbor }, true);
           }
         }
       }
@@ -329,6 +333,7 @@ export default class Minesweeper {
     const bombs = this.bomb.amount - this.flagged.size;
     this.header.updateBombCounter(bombs >= 0 ? bombs : 0);
     this.updateActivityStamp();
+    Sound.playFlag();
   }
 
   private registerTicker(): void {

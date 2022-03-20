@@ -59,3 +59,10 @@ export enum GameMode {
   intermediate = "16x16",
   expert = "24x24",
 }
+
+export enum SoundType {
+  Click = "click",
+  Flag = "flag",
+  Win = "win",
+  Lose = "lose",
+}

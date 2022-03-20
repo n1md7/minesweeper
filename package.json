@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@n1md7/indexeddb-promise": "^6.1.1",
+    "@pixi/sound": "^4.2.0",
     "gh-pages": "^3.2.3",
     "is-mobile": "^3.1.1",
     "lodash": "^4.17.21",
@@ -36,6 +37,7 @@
     "pixi.js": "^6.2.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^2.7.1",
-    "rxjs": "^7.5.5"
+    "rxjs": "^7.5.5",
+    "sound": "^2.7.0"
   }
 }
