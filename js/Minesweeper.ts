@@ -190,7 +190,7 @@ export default class Minesweeper {
     this.finished = true;
     this.started = false;
     this.header.status.setWon();
-    this.crazySDK.gameplayStop();
+    this.crazySDK?.gameplayStop();
     this.subject.next({
       mode: Utils.gameMode(),
       score: this.calculateTime(),
@@ -218,7 +218,7 @@ export default class Minesweeper {
     this.started = false;
     this.revealRemainingBombs();
     this.header.status.setGameOver();
-    this.crazySDK.gameplayStop();
+    this.crazySDK?.gameplayStop();
     if (this.isRevealedEnoughToSuggestAd && this.remainingUndos > 0) {
       this.adModal.show();
     }
@@ -227,7 +227,7 @@ export default class Minesweeper {
   private undoLastMove() {
     if (!this.lastRevealedCell) return false;
 
-    this.crazySDK.gameplayStart();
+    this.crazySDK?.gameplayStart();
     this.revealed.delete(this.lastRevealedCell.key);
     this.lastRevealedCell.undoDetonate();
     this.finished = false;
@@ -247,7 +247,7 @@ export default class Minesweeper {
     if (confirm) {
       confirm.addEventListener("click", () => {
         this.adModal.hide();
-        if (this.adsEnabled) this.crazySDK.requestAd("rewarded");
+        if (this.adsEnabled) this.crazySDK?.requestAd("rewarded");
         else this.adFinished();
       });
     }
@@ -372,7 +372,7 @@ export default class Minesweeper {
     if (!this.started) {
       this.started = true;
       this.gameStartedAt = Date.now();
-      this.crazySDK.gameplayStart();
+      this.crazySDK?.gameplayStart();
     }
 
     if (cell.flagged) return;

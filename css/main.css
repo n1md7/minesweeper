@@ -353,4 +353,8 @@ div.offcanvas-top {
   div.offcanvas-top {
     height: 100vh;
   }
+  #menu {
+    padding: 0;
+    margin-top: -6px;
+  }
 }

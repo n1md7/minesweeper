@@ -1,15 +1,11 @@
 import * as Lo from "lodash";
 import { BlockKey, NumberFormat } from "./main.types";
-import {
-  COLS,
-  GameMode,
-  HEADER_HEIGHT_IN_BLOCKS,
-  ROWS,
-} from "./main.constants";
+import { COLS, GameMode, ROWS } from "./main.constants";
 import isMobile from "is-mobile";
 
 export default class Utils {
   private static mode: GameMode = null;
+
   static get isMobile() {
     return isMobile();
   }
