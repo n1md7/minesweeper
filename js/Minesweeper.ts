@@ -31,13 +31,14 @@ export default class Minesweeper {
   private touchStartedAt = Date.now();
   private touchSensitivity = 196; // ms
   private adSuggestionAt = 0.51; // 51%
-  private remainingUndos = 1;
+  private remainingUndos = 2;
   private map: Map<BlockKey, Cell> = new Map();
   private revealed: Set<BlockKey> = new Set();
   private flagged: Set<BlockKey> = new Set();
   private finished = false;
   private started = false;
   private lastRevealedCell: Cell | null = null;
+  private adsEnabled = false;
   private bomb = {
     amount: 0,
     blocks: null,
@@ -246,7 +247,8 @@ export default class Minesweeper {
     if (confirm) {
       confirm.addEventListener("click", () => {
         this.adModal.hide();
-        this.crazySDK.requestAd("rewarded");
+        if (this.adsEnabled) this.crazySDK.requestAd("rewarded");
+        else this.adFinished();
       });
     }
   }
@@ -267,7 +269,7 @@ export default class Minesweeper {
     this.finished = false;
     this.started = false;
     this.lastRevealedCell = null;
-    this.remainingUndos = 1;
+    this.remainingUndos = 2;
   }
 
   private subscribeEvents(): void {
@@ -306,12 +308,14 @@ export default class Minesweeper {
   }
 
   private subscribeAdEvents() {
+    if (!this.adsEnabled) return;
     this.crazySDK?.addEventListener("adStarted", this.adStarted);
     this.crazySDK?.addEventListener("adError", this.adError);
     this.crazySDK?.addEventListener("adFinished", this.adFinished);
   }
 
   private unsubscribeAdEvents() {
+    if (!this.adsEnabled) return;
     this.crazySDK?.removeEventListener("adStarted", this.adStarted);
     this.crazySDK?.removeEventListener("adError", this.adError);
     this.crazySDK?.removeEventListener("adFinished", this.adFinished);
