@@ -271,11 +271,26 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
-  background-color: #fff;
+  background: #eeeeee;
+}
+
+#spinner {
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  background: #eeeeee;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 body p.modes {
   text-align: center;
+  margin: 2px 0 0;
+  font-size: 12px;
 }
 
 body p.modes a {
@@ -283,69 +298,63 @@ body p.modes a {
   text-decoration: none;
 }
 
-body p.modes a:after {
-  content: " | ";
-}
-
-body p.modes a:last-child:after {
-  content: "";
-}
-
 body .container {
   position: relative;
-  top: 4px;
   left: 0;
   right: 0;
-  max-width: 64vw;
-  max-height: 90vh;
+  max-width: 100vw;
+  max-height: 100vh;
   height: auto;
   margin: auto;
-  border: 1px solid #ddd;
   text-align: center;
+  border-color: rgb(238 238 238);
+  background: #eeeeee;
 }
 
 body .container canvas {
   left: 0;
   right: 0;
   margin: auto;
-  max-width: 64vw;
-  max-height: 64vh;
+  max-width: 100vw;
+  max-height: 100vh;
   height: auto;
   width: auto;
 }
 
-body .container .footer > div {
-  display: flex;
-  justify-content: center;
-  align-items: normal;
+div.offcanvas-top {
+  height: 90vh;
 }
 
-body .container .footer > div > div {
-  border: solid 1px #ddd;
-  width: 100%;
+#menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  z-index: 2;
+}
+
+#menu:focus,
+#menu:active,
+#menu:visited,
+#menu:hover {
+  box-shadow: none;
+  background: none;
+  color: #6a1a21;
+}
+
+#signature {
+  font-size: 10px;
   font-family: monospace;
-  font-size: 1.2em;
-}
-
-body .container .footer > div > div > strong {
-  font-size: 1.2em;
 }
 
 @media only screen and (max-width: 40em) {
-  body .container {
-    max-width: 98vw;
-    max-height: 98vh;
+  div.offcanvas-top {
+    height: 100vh;
   }
-
-  body .container canvas {
-    max-width: 98vw;
-  }
-
-  body .container .footer > div {
-    flex-direction: column;
-  }
-
-  body .container .footer > div > div {
-    border: solid 0 #ddd;
+  #menu {
+    padding: 0;
+    margin-top: -6px;
   }
 }

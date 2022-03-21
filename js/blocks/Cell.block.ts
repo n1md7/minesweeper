@@ -54,9 +54,24 @@ export default class Cell extends PIXI.Container {
     this.canvasRender();
   }
 
+  public undoOpen(): void {
+    this.opened = false;
+    this.createCell();
+    this.canvasRender();
+  }
+
+  // 💣 👉🏻 💥 = 🤕
   public detonate(): void {
     this.opened = true;
     this.detonated = true;
+    this.createCell();
+    this.canvasRender();
+  }
+
+  // 💥 👉🏻 💣 = 🤨
+  public undoDetonate(): void {
+    this.opened = false;
+    this.detonated = false;
     this.createCell();
     this.canvasRender();
   }
