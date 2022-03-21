@@ -1,4 +1,4 @@
-import { APP_HEIGHT, APP_WIDTH, COLS, GameMode, ROWS } from "./main.constants";
+import { APP_HEIGHT, APP_WIDTH, COLS, ROWS } from "./main.constants";
 import HeaderBlock from "./blocks/Header.block";
 import BodyBlock from "./blocks/Body.block";
 import StatusBlock from "./blocks/Status.block";
@@ -12,9 +12,13 @@ import * as PIXI from "pixi.js";
 import ms from "ms";
 import { Observable, ReplaySubject } from "rxjs";
 import Sound from "./sound/Sound";
+import { Modal } from "bootstrap/dist/js/bootstrap.esm";
 
 export default class Minesweeper {
   private static instance: Minesweeper;
+  private crazySDK: any;
+  private adModal: Modal;
+  private adAlert: Modal;
   private subject: ReplaySubject<GameChannelDto>;
   private observer: Observable<GameChannelDto>;
   private touchSubject: ReplaySubject<unknown>;
@@ -26,11 +30,14 @@ export default class Minesweeper {
   private lastActivityAt = Date.now();
   private touchStartedAt = Date.now();
   private touchSensitivity = 196; // ms
+  private adSuggestionAt = 0.51; // 51%
+  private remainingUndos = 1;
   private map: Map<BlockKey, Cell> = new Map();
   private revealed: Set<BlockKey> = new Set();
   private flagged: Set<BlockKey> = new Set();
   private finished = false;
   private started = false;
+  private lastRevealedCell: Cell | null = null;
   private bomb = {
     amount: 0,
     blocks: null,
@@ -51,6 +58,11 @@ export default class Minesweeper {
     return delta > this.touchSensitivity;
   }
 
+  private get isRevealedEnoughToSuggestAd(): boolean {
+    const revealedSize = this.revealed.size + this.flagged.size;
+    return revealedSize / (ROWS * COLS) >= this.adSuggestionAt;
+  }
+
   public static getInstance(): Minesweeper {
     if (!Minesweeper.instance) {
       Minesweeper.instance = new Minesweeper();
@@ -67,8 +79,11 @@ export default class Minesweeper {
   }
 
   private init(): void {
+    // @ts-ignore
+    this.crazySDK = window.CrazyGames?.CrazySDK?.getInstance();
     this.subject = new ReplaySubject<GameChannelDto>(0, 0);
     this.observer = this.subject.asObservable();
+    this.crazySDK?.init();
     this.conditionalInitForMobile();
     this.createPixiApplication();
     this.attachHeader();
@@ -76,6 +91,8 @@ export default class Minesweeper {
     this.generateBombs();
     this.generateMap();
     this.subscribeEvents();
+    this.subscribeAdEvents();
+    this.subscribeAdModal();
     this.registerTicker();
     this.render();
   }
@@ -111,8 +128,6 @@ export default class Minesweeper {
   }
 
   private generateBombs(): void {
-    console.time("Bombs generated in");
-
     const coefficient = ROWS * COLS * 0.129;
     const amount = Math.floor(coefficient);
     const blocks = Generate.bombs(amount);
@@ -121,17 +136,11 @@ export default class Minesweeper {
       blocks,
     };
     this.header.updateBombCounter(amount - this.flagged.size);
-
-    console.timeEnd("Bombs generated in");
   }
 
   private generateMap(): void {
-    console.time("Map generated in");
     this.map = Generate.map(this.bomb.blocks);
-    console.timeEnd("Map generated in");
-    console.time("Map rendered in");
     this.map.forEach((cell) => cell.canvasRender());
-    console.timeEnd("Map rendered in");
   }
 
   private updateActivityStamp(): void {
@@ -157,6 +166,7 @@ export default class Minesweeper {
   private propagateOpen(cell: Cell, visited: Set<BlockKey>) {
     cell.open();
     this.revealed.add(cell.key);
+    this.lastRevealedCell = cell;
     visited.add(cell.key);
     const neighbors = Utils.cellNeighbors(cell.key);
     for (const neighborId of neighbors) {
@@ -179,9 +189,9 @@ export default class Minesweeper {
     this.finished = true;
     this.started = false;
     this.header.status.setWon();
-    const [ROWS, COLS] = Utils.gameMode();
+    this.crazySDK.gameplayStop();
     this.subject.next({
-      mode: `${ROWS}x${COLS}` as GameMode,
+      mode: Utils.gameMode(),
       score: this.calculateTime(),
     });
   }
@@ -192,14 +202,53 @@ export default class Minesweeper {
     }
   }
 
+  private hideRevealedBombs(): void {
+    for (const bomb of this.bomb.blocks) {
+      this.map.get(bomb).undoOpen();
+    }
+  }
+
   private gameOver(cell: Cell) {
     Sound.playLose();
     cell.detonate();
     this.revealed.add(cell.key);
+    this.lastRevealedCell = cell;
     this.finished = true;
     this.started = false;
     this.revealRemainingBombs();
-    return this.header.status.setGameOver();
+    this.header.status.setGameOver();
+    this.crazySDK.gameplayStop();
+    if (this.isRevealedEnoughToSuggestAd && this.remainingUndos > 0) {
+      this.adModal.show();
+    }
+  }
+
+  private undoLastMove() {
+    if (!this.lastRevealedCell) return false;
+
+    this.crazySDK.gameplayStart();
+    this.revealed.delete(this.lastRevealedCell.key);
+    this.lastRevealedCell.undoDetonate();
+    this.finished = false;
+    this.started = true;
+    this.hideRevealedBombs();
+    this.header.status.setPlaying();
+
+    return true;
+  }
+
+  private subscribeAdModal() {
+    const modal = document.getElementById("watchAd");
+    const confirm = document.getElementById("adModalConfirm");
+    const alert = document.getElementById("noAdAvailable");
+    if (modal) this.adModal = new Modal(modal);
+    if (alert) this.adAlert = new Modal(alert);
+    if (confirm) {
+      confirm.addEventListener("click", () => {
+        this.adModal.hide();
+        this.crazySDK.requestAd("rewarded");
+      });
+    }
   }
 
   private restartGame() {
@@ -208,13 +257,17 @@ export default class Minesweeper {
     this.revealed.clear();
     this.flagged.clear();
     this.unsubscribeEvents();
+    this.unsubscribeAdEvents();
     this.generateBombs();
     this.generateMap();
     this.subscribeEvents();
+    this.subscribeAdEvents();
     this.header.updateTimer(0);
     this.header.status.setPlaying();
     this.finished = false;
     this.started = false;
+    this.lastRevealedCell = null;
+    this.remainingUndos = 1;
   }
 
   private subscribeEvents(): void {
@@ -252,6 +305,29 @@ export default class Minesweeper {
     this.body.removeChildren();
   }
 
+  private subscribeAdEvents() {
+    this.crazySDK?.addEventListener("adStarted", this.adStarted);
+    this.crazySDK?.addEventListener("adError", this.adError);
+    this.crazySDK?.addEventListener("adFinished", this.adFinished);
+  }
+
+  private unsubscribeAdEvents() {
+    this.crazySDK?.removeEventListener("adStarted", this.adStarted);
+    this.crazySDK?.removeEventListener("adError", this.adError);
+    this.crazySDK?.removeEventListener("adFinished", this.adFinished);
+  }
+
+  private adStarted = () => {};
+
+  private adError = () => {
+    this.adAlert.show();
+  };
+
+  private adFinished = () => {
+    this.remainingUndos--;
+    this.undoLastMove();
+  };
+
   private statusPress() {
     this.restartGame();
   }
@@ -285,12 +361,14 @@ export default class Minesweeper {
     this.header.status.setWorried();
   }
 
+  // This is actual click event
   private cellRelease({ target: cell }, recursiveCall = false) {
     if (this.finished) return;
     if (!recursiveCall) Sound.playClick();
     if (!this.started) {
       this.started = true;
       this.gameStartedAt = Date.now();
+      this.crazySDK.gameplayStart();
     }
 
     if (cell.flagged) return;

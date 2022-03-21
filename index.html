@@ -15,38 +15,156 @@
     />
     <meta property="og:type" content="" />
     <meta property="og:url" content="" />
-    <meta property="og:image" content="" />
+    <meta property="og:image" content="img/og-image.png" />
 
     <link rel="manifest" href="site.webmanifest" />
     <link rel="apple-touch-icon" href="icon.png" />
     <!-- Place favicon.ico in the root directory -->
-
+    <link
+      rel="stylesheet"
+      href="node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/main.css" />
 
     <meta name="theme-color" content="#fafafa" />
+    <script src="https://sdk.crazygames.com/crazygames-sdk-v1.js"></script>
   </head>
 
   <body>
-    <p class="modes">
-      <a href="?mode=9x9" data-mode="beginner">Beginner 9x9</a>
-      <a href="?mode=16x16" data-mode="intermediate">Intermediate 16x16</a>
-      <a href="?mode=24x24" data-mode="expert">Expert 24x24</a>
-    </p>
-    <div class="container">
-      <div class="header">
-        <h1>Minesweeper</h1>
+    <button
+      id="menu"
+      class="btn btn-sm btn-outline-danger"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#menuContainer"
+      aria-controls="menuContainer"
+    >
+      Menu
+    </button>
+    <div id="spinner" class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
-      <div class="body"></div>
-      <div class="footer">
-        <h3>Your best results</h3>
-        <div>
-          <div id="beginner">Beginner: <strong>000</strong></div>
-          <div id="intermediate">Intermediate: <strong>000</strong></div>
-          <div id="expert">Expert: <strong>000</strong></div>
+    </div>
+    <div
+      class="offcanvas offcanvas-top"
+      tabindex="-1"
+      id="menuContainer"
+      aria-labelledby="menuContainerLabel"
+    >
+      <div class="offcanvas-header">
+        <h5 id="menuContainerLabel">Menu</h5>
+        <button
+          type="button"
+          class="btn-close text-reset"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="row">
+          <h3 class="text-center text-muted">Change game difficulty</h3>
+          <div class="col-12">
+            <div class="d-flex justify-content-center">
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary active">
+                  <input type="radio" name="mode" id="mode-beginner" /> Beginner
+                </label>
+                <label class="btn btn-secondary">
+                  <input type="radio" name="mode" id="mode-intermediate" />
+                  Intermediate
+                </label>
+                <label class="btn btn-secondary">
+                  <input type="radio" name="mode" id="mode-expert" /> Expert
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4 text-muted text-center">
+          <h3>Your best results</h3>
+          <div class="col-12">
+            <div id="beginner">Beginner: <strong>000</strong></div>
+            <div id="intermediate">Intermediate: <strong>000</strong></div>
+            <div id="expert">Expert: <strong>000</strong></div>
+          </div>
+        </div>
+        <div class="row mt-4 text-center">
+          <div class="col-12">
+            <p class="small text-muted">
+              P.S. Click on the <strong>Smile(🙂)</strong> to restart the game
+            </p>
+          </div>
+        </div>
+        <div class="row mt-3 text-center">
+          <div class="col-12">
+            <button id="mute" class="btn btn-sm btn-outline-dark" type="button">
+              Mute 🔇
+            </button>
+          </div>
+        </div>
+        <div class="row mt-3 text-center">
+          <div class="col-12">
+            <p id="signature" class="small text-muted">გვალო სარკო გოკონდა</p>
+          </div>
         </div>
       </div>
     </div>
+    <div
+      class="modal fade"
+      id="watchAd"
+      tabindex="-1"
+      aria-labelledby="watchAdLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="watchAdLabel">Undo last move?</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            You can watch an Ad to undo last move and continue playing. Do you
+            wish to watch an Ad?
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              No
+            </button>
+            <button type="button" class="btn btn-primary" id="adModalConfirm">
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="noAdAvailable"
+      tabindex="-1"
+      aria-labelledby="noAdAvailableLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">No Ad available at the moment. 😔</div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="body"></div>
+    </div>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="js/vendor/modernizr-3.11.2.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/main.ts"></script>

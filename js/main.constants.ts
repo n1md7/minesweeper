@@ -1,12 +1,19 @@
 import Utils from "./Utils";
 
-export const [ROWS, COLS] = Utils.gameMode();
+export enum GameMode {
+  beginner = "beginner",
+  intermediate = "intermediate",
+  expert = "expert",
+}
+
 export const CELL_SIZE = 48;
 export const CELL_PADDING = 0;
 export const CONTAINER_MARGIN = 14;
 export const CELL_BORDER_RADIUS = 0;
-export const HEADER_HEIGHT = CELL_SIZE * 2;
+export const HEADER_HEIGHT_IN_BLOCKS = 2;
+export const HEADER_HEIGHT = CELL_SIZE * HEADER_HEIGHT_IN_BLOCKS;
 export const TEXT_PADDING = 4;
+export const [ROWS, COLS] = Utils.calculatedBlocks();
 export const APP_WIDTH = CELL_SIZE * COLS + CONTAINER_MARGIN * 2;
 export const APP_HEIGHT =
   ROWS * CELL_SIZE + HEADER_HEIGHT + CONTAINER_MARGIN * 2;
@@ -53,12 +60,6 @@ export const ColorsList = [
   Colors.Seven,
   Colors.Eight,
 ];
-
-export enum GameMode {
-  beginner = "9x9",
-  intermediate = "16x16",
-  expert = "24x24",
-}
 
 export enum SoundType {
   Click = "click",

@@ -2,21 +2,36 @@ import { sound } from "@pixi/sound";
 import { SoundType } from "../main.constants";
 
 export default class Sound {
+  private static _mute = !!localStorage.getItem("mute");
   private static volume = 0.25;
 
+  public static get isMuted() {
+    return this._mute;
+  }
+
+  public static mute() {
+    this._mute = true;
+    localStorage.setItem("mute", "mute");
+  }
+
+  public static unmute() {
+    this._mute = false;
+    localStorage.removeItem("mute");
+  }
+
   public static playClick() {
-    sound.play(SoundType.Click, { volume: this.volume });
+    Sound._mute || sound.play(SoundType.Click, { volume: this.volume });
   }
 
   public static playWin() {
-    sound.play(SoundType.Win, { volume: this.volume });
+    Sound._mute || sound.play(SoundType.Win, { volume: this.volume });
   }
 
   public static playFlag() {
-    sound.play(SoundType.Flag, { volume: this.volume });
+    Sound._mute || sound.play(SoundType.Flag, { volume: this.volume });
   }
 
   public static playLose() {
-    sound.play(SoundType.Lose, { volume: this.volume - 0.23 });
+    Sound._mute || sound.play(SoundType.Lose, { volume: this.volume - 0.23 });
   }
 }

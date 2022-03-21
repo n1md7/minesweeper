@@ -1,9 +1,15 @@
 import * as Lo from "lodash";
 import { BlockKey, NumberFormat } from "./main.types";
-import { COLS, ROWS } from "./main.constants";
+import {
+  COLS,
+  GameMode,
+  HEADER_HEIGHT_IN_BLOCKS,
+  ROWS,
+} from "./main.constants";
 import isMobile from "is-mobile";
 
 export default class Utils {
+  private static mode: GameMode = null;
   static get isMobile() {
     return isMobile();
   }
@@ -49,20 +55,49 @@ export default class Utils {
     return neighborBlocks.filter(Utils.inBoundCells).map(Utils.toAxB);
   }
 
-  static gameMode() {
-    const params = new URLSearchParams(window.location.search);
-    const mode = params.get("mode") || "9x9";
-    const [ROWS, COLS] = mode.split("x", 2);
-    const rows = parseInt(ROWS) || 6;
-    const cols = parseInt(COLS) || 6;
-
-    return [
-      rows >= 6 && rows <= 24 ? rows : 9,
-      cols >= 6 && cols <= 32 ? cols : 9,
-    ];
-  }
-
   static scoreFormat(score: number): NumberFormat {
     return score.toString().padStart(3, "0") as NumberFormat;
+  }
+
+  static calculatedBlocks() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const coefficient = width / height;
+    const mode = Utils.gameMode();
+    const blocks = { count: 9 ** 2 };
+    switch (mode) {
+      case GameMode.beginner:
+        blocks.count = 9 ** 2;
+        break;
+      case GameMode.intermediate:
+        blocks.count = 16 ** 2;
+        break;
+      case GameMode.expert:
+        blocks.count = 24 ** 2;
+        break;
+      default:
+        blocks.count = 9 ** 2;
+        break;
+    }
+
+    const cols = Math.floor(Math.sqrt(blocks.count * coefficient));
+    const rows = Math.floor(blocks.count / cols);
+
+    return [rows, cols];
+  }
+
+  public static gameMode(): GameMode {
+    if (Utils.mode) return Utils.mode;
+
+    const whitelist = [
+      GameMode.beginner,
+      GameMode.intermediate,
+      GameMode.expert,
+    ];
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode") as GameMode.beginner;
+    Utils.mode = whitelist.includes(mode) ? mode : GameMode.beginner;
+
+    return Utils.mode;
   }
 }
