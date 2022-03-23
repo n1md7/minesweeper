@@ -6,8 +6,6 @@ You can place flags on each block to make sure you won't step on it. Mouse click
 
 Written in Typescript with PIXI.js
 
-This branch is integration version for [Crazy Games](crazygames.com) platform.
-
 [Play in Github pages](https://n1md7.github.io/minesweeper/)
 
 [Play in itch.io platform](https://n1md7.itch.io/minesweeper)
