@@ -8,6 +8,8 @@ Written in Typescript with PIXI.js
 
 This branch is integration version for [Crazy Games](crazygames.com) platform.
 
-[Play online](https://n1md7.github.io/minesweeper/)
+[Play in Github pages](https://n1md7.github.io/minesweeper/)
+
+[Play in itch.io platform](https://n1md7.itch.io/minesweeper)
 
 ![img.png](img/img.png)
