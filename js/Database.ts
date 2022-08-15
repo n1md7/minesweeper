@@ -1,5 +1,4 @@
 import * as IndexedDBP from "@n1md7/indexeddb-promise";
-import Model from "@n1md7/indexeddb-promise/lib/Model";
 import ScoresTable from "./Score.model";
 import { GameMode } from "./main.constants";
 import { GameChannelDto } from "./main.types";
@@ -7,7 +6,7 @@ import { GameChannelDto } from "./main.types";
 export default class Database {
   private static instance: Database;
   private db: IndexedDBP.Database;
-  private scoresTable: Model<ScoresTable>;
+  private scoresTable: IndexedDBP.Model<ScoresTable>;
 
   private constructor() {
     this.init();
@@ -27,7 +26,12 @@ export default class Database {
       name: "Minesweeper",
       tables: [ScoresTable],
     });
-    this.scoresTable = this.db.useModel(ScoresTable);
+  }
+
+  public connect() {
+    return this.db.connect().then(() => {
+      this.scoresTable = this.db.useModel(ScoresTable);
+    });
   }
 
   public addScore(payload: GameChannelDto): Promise<Partial<ScoresTable>> {

@@ -13,7 +13,7 @@ console.info(
 document.body.oncontextmenu = (event) => event.preventDefault();
 
 SoundLoader.load()
-  .then(() => new Promise((resolve) => setTimeout(resolve, 100)))
+  .then(() => Database.getInstance().connect())
   .then(() => {
     const spinner = document.getElementById("spinner");
     spinner.hidden = true;

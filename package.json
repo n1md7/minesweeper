@@ -28,7 +28,7 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "@n1md7/indexeddb-promise": "^6.1.1",
+    "@n1md7/indexeddb-promise": "^7.0.4",
     "@pixi/sound": "^4.2.0",
     "bootstrap": "^5.1.3",
     "gh-pages": "^3.2.3",

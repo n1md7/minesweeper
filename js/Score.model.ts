@@ -1,4 +1,4 @@
-import { Table, PrimaryKey, Indexed, Database } from "@n1md7/indexeddb-promise";
+import { Table, PrimaryKey, Indexed } from "@n1md7/indexeddb-promise";
 import { GameMode } from "./main.constants";
 
 @Table({ name: "Scores", timestamps: true })
