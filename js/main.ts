@@ -14,6 +14,7 @@ document.body.oncontextmenu = (event) => event.preventDefault();
 
 SoundLoader.load()
   .then(() => Database.getInstance().connect())
+  .catch((err) => console.error(`IndexedDb is blocked by client! ${err}`))
   .then(() => {
     const spinner = document.getElementById("spinner");
     spinner.hidden = true;
