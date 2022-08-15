@@ -2,7 +2,7 @@ import Minesweeper from "./Minesweeper";
 import Database from "./Database";
 import { GameMode } from "./main.constants";
 import SoundLoader from "./sound/loader";
-import Utils from "./utils";
+import Utils from "./Utils";
 import Sound from "./sound/Sound";
 
 console.info(
