@@ -37,7 +37,7 @@ SoundLoader.load()
   .then(() => {
     const mute = document.getElementById("mute");
     if (mute) {
-      const text = (isMute: boolean) => (isMute ? "Unmute 🔊" : "Mute 🔇");
+      const text = (isMute: boolean) => (isMute ? "Unmute 🔇" : "Mute 🔊");
       mute.innerHTML = text(Sound.isMuted);
       mute.addEventListener("click", () => {
         Sound.isMuted ? Sound.unmute() : Sound.mute();

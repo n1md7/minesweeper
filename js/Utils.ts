@@ -56,8 +56,8 @@ export default class Utils {
   }
 
   static calculatedBlocks() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = Utils.reduceBy(window.innerWidth, 0);
+    const height = Utils.reduceBy(window.innerHeight, 24);
     const coefficient = width / height;
     const mode = Utils.gameMode();
     const blocks = { count: 9 ** 2 };
@@ -80,6 +80,10 @@ export default class Utils {
     const rows = Math.floor(blocks.count / cols);
 
     return [rows, cols];
+  }
+
+  static reduceBy(target: number, percent: number) {
+    return target - (target * percent) / 100;
   }
 
   public static gameMode(): GameMode {

@@ -1,18 +1,22 @@
 import { APP_HEIGHT, APP_WIDTH, COLS, ROWS } from "./main.constants";
+
 import HeaderBlock from "./blocks/Header.block";
 import BodyBlock from "./blocks/Body.block";
 import StatusBlock from "./blocks/Status.block";
 import BombBlock from "./blocks/Bomb.block";
 import TimerBlock from "./blocks/Timer.block";
-import Generate from "./Generate";
-import { BlockKey, GameChannelDto } from "./main.types";
 import Cell from "./blocks/Cell.block";
+
+import Generate from "./Generate";
 import Utils from "./Utils";
-import * as PIXI from "pixi.js";
+
 import ms from "ms";
-import { Observable, ReplaySubject } from "rxjs";
+import * as PIXI from "pixi.js";
 import Sound from "./sound/Sound";
+import { Observable, ReplaySubject } from "rxjs";
 import { Modal } from "bootstrap/dist/js/bootstrap.esm";
+
+import type { BlockKey, GameChannelDto } from "./main.types";
 
 export default class Minesweeper {
   private static instance: Minesweeper;

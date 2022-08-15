@@ -309,6 +309,7 @@ body .container {
   text-align: center;
   border-color: rgb(238 238 238);
   background: #eeeeee;
+  padding: 0 !important;
 }
 
 body .container canvas {
